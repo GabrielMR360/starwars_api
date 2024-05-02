@@ -1,0 +1,20 @@
+spring:
+  application:
+    name=starwars_api
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/starwars-db
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  flyway:
+    url: jdbc:mysql://localhost:3306/starwars-db
+    default-schema: starwars-db
+    user: root
+    password: root
