@@ -16,8 +16,7 @@ CREATE TABLE item
 
 CREATE TABLE inventario
 (
-    id      BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    item_id BIGINT             NOT NULL
+    id      BIGINT PRIMARY KEY NOT NULL AUTO_INCREMENT
 );
 
 CREATE TABLE rebelde

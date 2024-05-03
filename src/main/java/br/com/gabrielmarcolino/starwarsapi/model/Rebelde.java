@@ -29,7 +29,7 @@ public class Rebelde {
     private GeneroEnum genero;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private Localizacao localizaca;
+    private Localizacao localizacao;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Inventario inventario;
