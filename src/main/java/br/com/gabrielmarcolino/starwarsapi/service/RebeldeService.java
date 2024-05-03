@@ -14,4 +14,15 @@ public class RebeldeService {
     public Rebelde salvar(RebeldeRequest rebeldeRequest) {
         return rebeldeRepository.save(rebeldeRequest.toRebelde());
     }
+
+    public void reportarTraidor(Long id) {
+        Rebelde rebelde = rebeldeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ID " + id + " não encontrado."));
+
+        rebelde.setQuantidadeReports(rebelde.getQuantidadeReports() + 1);
+        if (rebelde.getQuantidadeReports() >= 3) {
+            rebelde.setTraidor(true);
+        }
+
+        rebeldeRepository.save(rebelde);
+    }
 }

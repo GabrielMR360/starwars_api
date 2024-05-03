@@ -33,4 +33,10 @@ public class Rebelde {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Inventario inventario;
+
+    @Column(name = "quantidade_reports")
+    private int quantidadeReports;
+
+    @Column(name = "traidor")
+    private boolean isTraidor;
 }

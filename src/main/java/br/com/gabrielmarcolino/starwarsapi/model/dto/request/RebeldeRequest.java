@@ -15,7 +15,9 @@ public record RebeldeRequest(String nome, int idade, GeneroEnum genero, Localiza
                 idade,
                 genero,
                 localizacao.toLocalizacao(),
-                new Inventario(null, gerarIventario()));
+                new Inventario(null, gerarIventario()),
+                0,
+                false);
     }
 
     private List<Item> gerarIventario() {
