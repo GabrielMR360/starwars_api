@@ -1,7 +1,10 @@
 package br.com.gabrielmarcolino.starwarsapi.controller;
 
+import br.com.gabrielmarcolino.starwarsapi.model.Localizacao;
 import br.com.gabrielmarcolino.starwarsapi.model.Rebelde;
+import br.com.gabrielmarcolino.starwarsapi.model.dto.request.LocalizacaoRequest;
 import br.com.gabrielmarcolino.starwarsapi.model.dto.request.RebeldeRequest;
+import br.com.gabrielmarcolino.starwarsapi.model.dto.response.LocalizacaoResponse;
 import br.com.gabrielmarcolino.starwarsapi.model.dto.response.RebeldeResponse;
 import br.com.gabrielmarcolino.starwarsapi.service.RebeldeService;
 import lombok.RequiredArgsConstructor;
@@ -25,5 +28,12 @@ public class RebeldeController {
         rebeldeService.reportarTraidor(id);
 
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/localizacao/atualizar/{id}")
+    public ResponseEntity<LocalizacaoResponse> atualizarLocalizacao(@PathVariable Long id, @RequestBody LocalizacaoRequest localizacaoRequest) {
+        Rebelde rebelde = rebeldeService.atualizarLocalizacao(id, localizacaoRequest);
+        Localizacao localizacao = rebelde.getLocalizacao();
+        return ResponseEntity.ok(LocalizacaoResponse.toLocalizacaoResponse(localizacao));
     }
 }

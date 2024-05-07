@@ -6,4 +6,8 @@ public record LocalizacaoRequest(Integer latitude, Integer longitude, String nom
     public Localizacao toLocalizacao() {
         return new Localizacao(null, latitude, longitude, nome);
     }
+
+    public Localizacao toLocalizacao(LocalizacaoRequest localizacao) {
+        return new Localizacao(toLocalizacao().getId(), localizacao.latitude, localizacao.longitude, localizacao.nome);
+    }
 }
