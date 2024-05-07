@@ -3,6 +3,7 @@ package br.com.gabrielmarcolino.starwarsapi.controller;
 import br.com.gabrielmarcolino.starwarsapi.model.Localizacao;
 import br.com.gabrielmarcolino.starwarsapi.model.Rebelde;
 import br.com.gabrielmarcolino.starwarsapi.model.dto.request.LocalizacaoRequest;
+import br.com.gabrielmarcolino.starwarsapi.model.dto.request.NegociacaoRequest;
 import br.com.gabrielmarcolino.starwarsapi.model.dto.request.RebeldeRequest;
 import br.com.gabrielmarcolino.starwarsapi.model.dto.response.LocalizacaoResponse;
 import br.com.gabrielmarcolino.starwarsapi.model.dto.response.RebeldeResponse;
@@ -35,5 +36,11 @@ public class RebeldeController {
         Rebelde rebelde = rebeldeService.atualizarLocalizacao(id, localizacaoRequest);
         Localizacao localizacao = rebelde.getLocalizacao();
         return ResponseEntity.ok(LocalizacaoResponse.toLocalizacaoResponse(localizacao));
+    }
+
+    @PutMapping("/negociar")
+    public ResponseEntity<Void> negociarItens(@RequestBody NegociacaoRequest negociacaoRequest) {
+        rebeldeService.negociarItens(negociacaoRequest);
+        return ResponseEntity.ok().build();
     }
 }
