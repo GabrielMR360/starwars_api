@@ -19,9 +19,6 @@ public class Item {
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "quantidade")
-    private Integer quantidade;
-
     @Column(name = "pontos")
     private Integer pontos;
 }

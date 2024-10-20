@@ -1,13 +1,10 @@
 package br.com.gabrielmarcolino.starwarsapi.service;
 
 import br.com.gabrielmarcolino.starwarsapi.model.Inventario;
-import br.com.gabrielmarcolino.starwarsapi.model.Item;
+import br.com.gabrielmarcolino.starwarsapi.model.InventarioItem;
 import br.com.gabrielmarcolino.starwarsapi.model.Localizacao;
 import br.com.gabrielmarcolino.starwarsapi.model.Rebelde;
-import br.com.gabrielmarcolino.starwarsapi.model.dto.request.ItemRequest;
-import br.com.gabrielmarcolino.starwarsapi.model.dto.request.LocalizacaoRequest;
-import br.com.gabrielmarcolino.starwarsapi.model.dto.request.NegociacaoRequest;
-import br.com.gabrielmarcolino.starwarsapi.model.dto.request.RebeldeRequest;
+import br.com.gabrielmarcolino.starwarsapi.model.dto.request.*;
 import br.com.gabrielmarcolino.starwarsapi.repository.RebeldeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -56,34 +53,21 @@ public class RebeldeService {
         Rebelde rebeldeNegociante = buscarPorId(negociacaoRequest.idNegociante());
         Rebelde rebeldeRecebedor = buscarPorId(negociacaoRequest.idRecebedor());
 
-        List<Item> itensRebeldeNegociante = rebeldeNegociante.getInventario().getItens();
-        List<Item> itensRebeldeRecebedor = rebeldeRecebedor.getInventario().getItens();
+        List<InventarioItem> itensRebeldeNegociante = rebeldeNegociante.getInventario().getItens();
+        List<InventarioItem> itensRebeldeRecebedor = rebeldeRecebedor.getInventario().getItens();
+
+        List<InventarioItemRequest> itensNegociante = negociacaoRequest.itensNegociante();
+        List<InventarioItemRequest> itensRecebedor = negociacaoRequest.itensRecebedor();
 
         validarTraidor(rebeldeNegociante, rebeldeRecebedor);
         validarInventario(rebeldeNegociante.getInventario(), rebeldeRecebedor.getInventario());
-        validarValoresNegociacao(itensRebeldeNegociante, itensRebeldeRecebedor);
+        validarValoresNegociacao(itensNegociante, itensRecebedor);
 
-        validarItens(itensRebeldeNegociante, negociacaoRequest.itensRecebedor());
-        validarItens(itensRebeldeRecebedor, negociacaoRequest.itensNegociante());
-    }
+        validarItens(itensRebeldeNegociante, itensRebeldeRecebedor, itensRecebedor);
+        validarItens(itensRebeldeRecebedor, itensRebeldeNegociante, itensNegociante);
 
-    private void validarItens(List<Item> itensRebelde, List<ItemRequest> itensNegociancao) {
-        itensNegociancao.forEach(itemNegociante -> {
-            boolean possuiItem = itensRebelde.stream().anyMatch(itemRebeldeRecebedor -> {
-                if (itemNegociante.getNome().equals(itemRebeldeRecebedor.getNome())) {
-                    if (itemNegociante.getQuantidade() > itemRebeldeRecebedor.getQuantidade()) {
-                        throw new RuntimeException("O rebelde recebedor não possui a quantidade de itens solicitado.");
-                    }
-                    return true;
-                } else {
-                    return false;
-                }
-            });
-
-            if (!possuiItem) {
-                throw new IllegalArgumentException("O item " + itemNegociante.getNome() + " não foi encontrado.");
-            }
-        });
+        rebeldeRepository.save(rebeldeNegociante);
+        rebeldeRepository.save(rebeldeRecebedor);
     }
 
     private void validarTraidor(Rebelde rebeldeNegociante, Rebelde rebeldeRecebedor) {
@@ -98,17 +82,54 @@ public class RebeldeService {
         }
     }
 
-    private void validarValoresNegociacao(List<Item> itensNegociante, List<Item> itensRecebedor) {
+    private void validarValoresNegociacao(List<InventarioItemRequest> itensNegociante, List<InventarioItemRequest> itensRecebedor) {
         Integer pontosNegociante = itensNegociante.stream()
-                .map(item -> item.getPontos() * item.getQuantidade())
+                .map(inventarioItem -> inventarioItem.quantidade() * inventarioItem.item().getPontos())
                 .reduce(0, (a, b) -> a + b);
 
         Integer pontosRecebedor = itensRecebedor.stream()
-                .map(item -> item.getPontos() * item.getQuantidade())
+                .map(inventarioItem -> inventarioItem.quantidade() * inventarioItem.item().getPontos())
                 .reduce(0, (a, b) -> a + b);
 
         if (pontosNegociante.compareTo(pontosRecebedor) != 0) {
             throw new IllegalArgumentException("Os pontos para negociação são inválidos");
         }
+    }
+
+    private void validarItens(List<InventarioItem> itensRebelde, List<InventarioItem> itensRecebedor, List<InventarioItemRequest> itensNegociacao) {
+        itensNegociacao.forEach(itensNegociante -> {
+            boolean possuiItem = itensRebelde.stream().anyMatch(itemRebeldeRecebedor -> {
+                if (itensNegociante.item().getNome().equals(itemRebeldeRecebedor.getItem().getNome())) {
+                    if (itensNegociante.quantidade() > itemRebeldeRecebedor.getQuantidadeItem()) {
+                        throw new RuntimeException("O rebelde recebedor não possui a quantidade de itens solicitado.");
+                    }
+
+                    adicionarItens(itensRebelde, itensNegociante.item(), itensNegociante.quantidade());
+                    removerItens(itensRecebedor, itensNegociante.item(), itensNegociante.quantidade());
+                    return true;
+                }
+                return false;
+            });
+
+            if (!possuiItem) {
+                throw new IllegalArgumentException("O item " + itensNegociante.item().getNome() + " não foi encontrado.");
+            }
+        });
+    }
+
+    private void adicionarItens(List<InventarioItem> itensRebelde, ItemRequest item, Integer quantidade) {
+        itensRebelde.forEach(itemRebelde -> {
+            if (itemRebelde.getItem().getNome().equals(item.getNome())) {
+                itemRebelde.setQuantidadeItem(itemRebelde.getQuantidadeItem() + quantidade);
+            }
+        });
+    }
+
+    private void removerItens(List<InventarioItem> itensRebelde, ItemRequest item, Integer quantidade) {
+        itensRebelde.forEach(itemRebelde -> {
+            if (itemRebelde.getItem().getNome().equals(item.getNome())) {
+                itemRebelde.setQuantidadeItem(itemRebelde.getQuantidadeItem() - quantidade);
+            }
+        });
     }
 }

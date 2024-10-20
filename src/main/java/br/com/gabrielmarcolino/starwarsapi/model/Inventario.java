@@ -18,12 +18,7 @@ public class Inventario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "item_id")
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "inventario_item",
-            joinColumns = @JoinColumn(name = "inventario_id"),
-            inverseJoinColumns = @JoinColumn(name = "item_id")
-    )
-    private List<Item> itens;
+
+    @OneToMany(mappedBy = "inventario", cascade = CascadeType.ALL)
+    private List<InventarioItem> itens;
 }

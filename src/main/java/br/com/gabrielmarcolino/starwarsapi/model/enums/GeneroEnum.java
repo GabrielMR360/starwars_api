@@ -2,6 +2,12 @@ package br.com.gabrielmarcolino.starwarsapi.model.enums;
 
 public enum GeneroEnum {
 
-    MASCULINO,
-    FEMININO
+    MASCULINO("Masculino"),
+    FEMININO("Feminino");
+
+    private String descricao;
+
+    GeneroEnum(String descricao) {
+        this.descricao = descricao;
+    }
 }
