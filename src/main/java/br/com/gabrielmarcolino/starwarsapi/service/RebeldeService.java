@@ -1,5 +1,7 @@
 package br.com.gabrielmarcolino.starwarsapi.service;
 
+import br.com.gabrielmarcolino.starwarsapi.exception.BaseException;
+import br.com.gabrielmarcolino.starwarsapi.exception.enums.ErroEnum;
 import br.com.gabrielmarcolino.starwarsapi.model.Inventario;
 import br.com.gabrielmarcolino.starwarsapi.model.InventarioItem;
 import br.com.gabrielmarcolino.starwarsapi.model.Localizacao;
@@ -72,13 +74,13 @@ public class RebeldeService {
 
     private void validarTraidor(Rebelde rebeldeNegociante, Rebelde rebeldeRecebedor) {
         if (rebeldeNegociante.isTraidor() || rebeldeRecebedor.isTraidor()) {
-            throw new IllegalArgumentException("Algum dos rebeldes é um traidor");
+            throw new BaseException(ErroEnum.REBELDE_TRAIDOR);
         }
     }
 
     private void validarInventario(Inventario inventarioNegociante, Inventario inventarioRecebedor) {
         if (inventarioNegociante.getItens().isEmpty() || inventarioRecebedor.getItens().isEmpty()) {
-            throw new IllegalArgumentException("Algum dos invetários está vazio");
+            throw new BaseException(ErroEnum.INVENTARIO_VAZIO);
         }
     }
 
@@ -92,7 +94,7 @@ public class RebeldeService {
                 .reduce(0, (a, b) -> a + b);
 
         if (pontosNegociante.compareTo(pontosRecebedor) != 0) {
-            throw new IllegalArgumentException("Os pontos para negociação são inválidos");
+            throw new BaseException(ErroEnum.PONTOS_NEGOCIACAO_INVALIDOS);
         }
     }
 
@@ -101,7 +103,7 @@ public class RebeldeService {
             boolean possuiItem = itensRebelde.stream().anyMatch(itemRebeldeRecebedor -> {
                 if (itensNegociante.item().getNome().equals(itemRebeldeRecebedor.getItem().getNome())) {
                     if (itensNegociante.quantidade() > itemRebeldeRecebedor.getQuantidadeItem()) {
-                        throw new RuntimeException("O rebelde recebedor não possui a quantidade de itens solicitado.");
+                        throw new BaseException(ErroEnum.QUANTIDADE_ITENS_INVALIDOS);
                     }
 
                     adicionarItens(itensRebelde, itensNegociante.item(), itensNegociante.quantidade());
@@ -112,7 +114,7 @@ public class RebeldeService {
             });
 
             if (!possuiItem) {
-                throw new IllegalArgumentException("O item " + itensNegociante.item().getNome() + " não foi encontrado.");
+                throw new BaseException(ErroEnum.ITEM_NAO_ENCONTRADO);
             }
         });
     }
@@ -131,5 +133,9 @@ public class RebeldeService {
                 itemRebelde.setQuantidadeItem(itemRebelde.getQuantidadeItem() - quantidade);
             }
         });
+    }
+
+    public List<Rebelde> findAll() {
+        return rebeldeRepository.findAll();
     }
 }

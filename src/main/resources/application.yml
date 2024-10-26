@@ -1,6 +1,8 @@
 spring:
   application:
     name: starwars_api
+  messages:
+    basename: message
 
   datasource:
     url: jdbc:mysql://localhost:3306/starwars_db
