@@ -1,5 +1,7 @@
 package br.com.gabrielmarcolino.starwarsapi.service;
 
+import br.com.gabrielmarcolino.starwarsapi.exception.BaseException;
+import br.com.gabrielmarcolino.starwarsapi.exception.enums.ErroEnum;
 import br.com.gabrielmarcolino.starwarsapi.model.InventarioItem;
 import br.com.gabrielmarcolino.starwarsapi.model.Localizacao;
 import br.com.gabrielmarcolino.starwarsapi.model.Rebelde;
@@ -28,7 +30,7 @@ public class RebeldeService {
     }
 
     public Rebelde buscarPorId(Long id) {
-        return rebeldeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("ID " + id + " não encontrado."));
+        return rebeldeRepository.findById(id).orElseThrow(() -> new BaseException(ErroEnum.REBELDE_NAO_ENCONTRADO));
     }
 
     public void reportarTraidor(Long id) {

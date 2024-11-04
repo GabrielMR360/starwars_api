@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErroEnum {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, 500, "error.internalServerError"),
+    REBELDE_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, 404, "error.rebeldeNaoEncontrado"),
     PONTOS_NEGOCIACAO_INVALIDOS(HttpStatus.BAD_REQUEST, 400, "error.pontosNegociacaoInvalidos"),
     QUANTIDADE_ITENS_INVALIDOS(HttpStatus.BAD_REQUEST, 400, "error.quantidadeItensInvalidos"),
     REBELDE_TRAIDOR(HttpStatus.BAD_REQUEST, 400, "error.rebeldeTraidor"),
