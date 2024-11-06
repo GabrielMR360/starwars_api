@@ -5,7 +5,7 @@ spring:
     basename: message
 
   datasource:
-    url: jdbc:mysql://db:3306/starwars_db
+    url: jdbc:mysql://database:3306/starwars_db
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,7 +16,7 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 
   flyway:
-    url: jdbc:mysql://db:3306/starwars_db
+    url: jdbc:mysql://database:3306/starwars_db
     default-schema: starwars_db
     user: root
     password: root

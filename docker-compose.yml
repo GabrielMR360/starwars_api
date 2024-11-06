@@ -7,16 +7,10 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/starwars_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
     depends_on:
-      - db
-    networks:
-      - starwars-network
+      - database
 
-  db:
+  database:
     image: mysql:8.0
     ports:
       - "3306:3306"
@@ -25,11 +19,6 @@ services:
       MYSQL_DATABASE: starwars_db
     volumes:
       - db-data:/var/lib/mysql
-    networks:
-      - starwars-network
 
 volumes:
   db-data:
-
-networks:
-  starwars-network:
