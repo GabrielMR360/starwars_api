@@ -48,13 +48,28 @@ Antes de rodar o comando do docker-compose pode ser necessário dar permissão p
 chmod +x /app/wait-for-it.sh
 ```
 
+Para subir a aplicação e o banco de dados basta rodar o comando:
+
 ```
 docker-compose up -d --build
+```
+
+Para derrubar a aplicação e o banco de dados basta rodar o comando:
+
+```
+docker-compose down
 ```
 
 ### Localmente
 
 Para rodar localmente é necessário alterar o arquivo application.properties para apontar para o banco de dados local, alterando o host da url do banco para localhost e o usuário e senha para o do banco de dados local configurado.
+
+### Testes
+
+Para rodar os testes: 
+```
+mvn test
+```
 
 ## Documentação
 
