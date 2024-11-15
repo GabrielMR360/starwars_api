@@ -24,60 +24,55 @@ public class InventarioServiceTest {
     private InventarioService inventarioService;
 
     private List<InventarioItem> itensRebeldeNegociante;
-
     private List<InventarioItem> itensRebeldeRecebedor;
 
-    private NegociacaoRequest negociacaoRequest;
-
     @BeforeEach
-    public void setup() {
+    public void setUp() {
         MockitoAnnotations.openMocks(this);
-
         itensRebeldeNegociante = inventarioItens();
         itensRebeldeRecebedor = inventarioItens();
-
-        ItemRequest arma = new ItemRequest("Arma", 4);
-        ItemRequest comida = new ItemRequest("Comida", 3);
-
-        InventarioItemRequest inventarioItemRequest1 = new InventarioItemRequest(arma, 1);
-        InventarioItemRequest inventarioItemRequest3 = new InventarioItemRequest(comida, 1);
-
-        List<InventarioItemRequest> itensNegociante = new ArrayList<>();
-        itensNegociante.add(inventarioItemRequest1);
-
-        List<InventarioItemRequest> itensRecebedor = new ArrayList<>();
-        itensRecebedor.add(inventarioItemRequest3);
-
-        negociacaoRequest = new NegociacaoRequest(
-                1L,
-                2L,
-                itensNegociante,
-                itensRecebedor
-        );
     }
 
     private List<InventarioItem> inventarioItens() {
         return gerarItens().stream()
-                .map(item -> new InventarioItem(null, null, item, 0))
+                .map(item -> new InventarioItem(null, null, item, 1))
                 .toList();
     }
 
     private List<Item> gerarItens() {
         Item arma = new Item(null, "Arma", 4);
         Item comida = new Item(null, "Comida", 1);
-
         return Arrays.asList(arma, comida);
     }
 
     @Test
     public void deveTrocarOsItensSolicitadosNaNegociacaoEAlterarQuantidade() {
-        inventarioService.trocarItens(itensRebeldeNegociante, itensRebeldeRecebedor, negociacaoRequest);
+        ItemRequest arma = new ItemRequest("Arma", 4);
+        ItemRequest comida = new ItemRequest("Comida", 1);
 
-        assertEquals(0, itensRebeldeNegociante.get(0).getQuantidadeItem());
-        assertEquals(2, itensRebeldeNegociante.get(1).getQuantidadeItem());
+        InventarioItemRequest inventarioItemRequest1 = new InventarioItemRequest(arma, 1);
+        InventarioItemRequest inventarioItemRequest2 = new InventarioItemRequest(comida, 1);
+
+        List<InventarioItemRequest> itensNegociante = new ArrayList<>();
+        itensNegociante.add(inventarioItemRequest1);
+
+        List<InventarioItemRequest> itensRecebedor = new ArrayList<>();
+        itensRecebedor.add(inventarioItemRequest2);
+
+        NegociacaoRequest negociacaoRequest = new NegociacaoRequest(
+                1L,
+                2L,
+                itensNegociante,
+                itensRecebedor
+        );
+
+        inventarioService.trocarItens(itensRebeldeNegociante, itensRebeldeRecebedor, negociacaoRequest);
 
         assertEquals(2, itensRebeldeRecebedor.get(0).getQuantidadeItem());
         assertEquals(0, itensRebeldeRecebedor.get(1).getQuantidadeItem());
+
+        assertEquals(0, itensRebeldeNegociante.get(0).getQuantidadeItem());
+        assertEquals(2, itensRebeldeNegociante.get(1).getQuantidadeItem());
     }
 
     @Test
