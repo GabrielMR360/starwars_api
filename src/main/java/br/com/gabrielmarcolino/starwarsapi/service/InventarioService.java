@@ -1,5 +1,7 @@
 package br.com.gabrielmarcolino.starwarsapi.service;
 
+import br.com.gabrielmarcolino.starwarsapi.exception.BaseException;
+import br.com.gabrielmarcolino.starwarsapi.exception.enums.ErroEnum;
 import br.com.gabrielmarcolino.starwarsapi.model.InventarioItem;
 import br.com.gabrielmarcolino.starwarsapi.model.dto.request.InventarioItemRequest;
 import br.com.gabrielmarcolino.starwarsapi.model.dto.request.ItemRequest;
@@ -36,7 +38,13 @@ public class InventarioService {
     private static void removerItens(List<InventarioItem> inventario, ItemRequest item, Integer quantidade) {
         inventario.forEach(inventarioItem -> {
             if (inventarioItem.getItem().getNome().equals(item.getNome())) {
-                inventarioItem.setQuantidadeItem(inventarioItem.getQuantidadeItem() - quantidade);
+                int novaQuantidadeItens = inventarioItem.getQuantidadeItem() - quantidade;
+
+                if (novaQuantidadeItens < 0) {
+                    throw new BaseException(ErroEnum.QUANTIDADE_ITENS_NEGATIVA);
+                }
+
+                inventarioItem.setQuantidadeItem(novaQuantidadeItens);
             }
         });
     }

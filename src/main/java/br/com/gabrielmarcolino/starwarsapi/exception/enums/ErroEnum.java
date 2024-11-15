@@ -14,7 +14,7 @@ public enum ErroEnum {
     REBELDE_TRAIDOR(HttpStatus.BAD_REQUEST, 400, "error.rebeldeTraidor"),
     INVENTARIO_VAZIO(HttpStatus.BAD_REQUEST, 400, "error.inventarioVazio"),
     ITEM_NAO_ENCONTRADO(HttpStatus.NOT_FOUND, 404, "error.itemNaoEncontrado"),
-    ;
+    QUANTIDADE_ITENS_NEGATIVA(HttpStatus.BAD_REQUEST, 400, "error.quantidadeItensNegativa");
 
     private final HttpStatus httpStatus;
     private final Integer codigo;
